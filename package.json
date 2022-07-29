@@ -9,9 +9,22 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@mui/icons-material": "^5.8.4",
+    "@mui/material": "^5.9.1",
+    "@mui/styles": "^5.9.1",
+    "axios": "^0.27.2",
+    "bootstrap": "^5.2.0",
+    "immer": "^9.0.15",
+    "js-cookie": "^3.0.1",
     "next": "12.2.3",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-backdrop-filter": "^2.1.0",
+    "react-bootstrap": "^2.4.0",
+    "react-bootstrap-icons": "^1.8.4",
+    "react-dom": "18.2.0",
+    "react-material-ui-carousel": "^3.4.2"
   },
   "devDependencies": {
     "eslint": "8.20.0",
