@@ -363,7 +363,7 @@ const SearchForStations = (props) => {
 				<Row>
 					<Col>
 						{nearStations.length > 0 && <Typography variant='subtitle2' style={{float:'left'}}>
-							hittades {nearStations.length} stationer
+							Hittades {nearStations.length} stationer
 						</Typography>}
 						{nearStations.length < 1 && <Typography variant='subtitle2' style={{float:'left'}}>
 						Inga stationer hittades nära din plats
