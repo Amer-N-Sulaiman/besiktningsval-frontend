@@ -107,7 +107,7 @@ const OpusStation = ({station, stationIdx, addSortingInfo, regNum})=>{
 		                    {station.City}, {station.StreetAddress}
 		                </Typography>
 	                   	<Typography variant='body2' className="mt-2">
-						   Available date<br />
+						   Tillgängligt datum<br />
 	                    	<ArrowCircleLeftIcon style={{marginBottom: '6px', marginRight: '5px'}} onClick={decreaseDate} /><span style={{fontSize: '1.5em'}}>{currentDate()}</span><ArrowCircleRightIcon color="royalblue" style={{marginBottom: '6px', marginLeft: '5px'}} onClick={increaseDate}/><br />
 							På<br />
 	                    	<ArrowCircleLeftIcon style={{marginBottom: '6px', marginRight: '5px'}} onClick={decreaseTime}/><span style={{fontSize: '1.5em'}}>{currentTime()}</span><ArrowCircleRightIcon color="royalblue" style={{marginBottom: '6px', marginLeft: '5px'}} onClick={increaseTime}/><br />

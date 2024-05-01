@@ -14,11 +14,11 @@ import MenuItem from '@mui/material/MenuItem';
 // import {useHistory} from 'react-router-dom';
 import {useRouter} from 'next/router'
 
-import Image from 'next/image'
+// import Image from 'next/image'
 
 
 
-const pages = ['Besiktning', 'Kontakta oss', 'Om oss'];
+const pages = ['Om oss', 'BesiktningsVal'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 
@@ -52,8 +52,8 @@ const NavBar = () => {
             component="div"
             sx={{ mr: 2, display: { xs: 'none', md: 'flex' }, lineHeight: '80px' }}
           >
-            <img src='/besiktning-logo.png' alt='besiktning logo' onClick={()=>{router.push("/")}} style={{height:'60px', width: '116px', marginTop: '10px'}} />
-            <span onClick={()=>{router.push("/")}} style={{marginLeft:'30px'}}> BesiktningsVal</span>
+            <img src='/besiktning-logo.png' alt='besiktning logo' onClick={()=>{router.push("/")}} style={{cursor: 'pointer', height:'60px', width: '116px', marginTop: '10px', marginBottom: '10px'}} />
+            
           </Typography>
 
           <Box sx={{ display: { xs: 'block', md: 'none' }, marginRight: '25px' }}>
@@ -88,7 +88,14 @@ const NavBar = () => {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center" onClick={()=>{router.push('/'+page.toLowerCase().replace(/ /g,''))}}>{page}</Typography>
+                  <Typography textAlign="center" onClick={()=>{
+                    if (page=='BesiktningsVal'){
+                      router.push('/')
+                    }else{
+                      router.push('/'+page.toLowerCase().replace(/ /g,''))
+                    }
+                      
+                    }}>{page}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -99,7 +106,14 @@ const NavBar = () => {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, lineHeight: '80px' }}
           >
-            <span onClick={()=>{router.push("/")}} style={{}}> BesiktningsVal</span>
+            {/* <span onClick={()=>{
+              if (page=='BesiktningsVal'){
+                router.push('/')
+              }else{
+                print('false')
+                router.push('/'+page.toLowerCase().replace(/ /g,''))
+              }
+              }} style={{}}> BesiktningsVal</span> */}
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }}}>
             <div style={{width: '100%'}}>
@@ -109,7 +123,11 @@ const NavBar = () => {
                 key={page}
                 onClick={()=>{
                   setAnchorElNav(null);
-                  router.push('/'+page.toLowerCase().replace(/ /g,''));
+                  if (page=='BesiktningsVal'){
+                    router.push('/')
+                  }else{
+                    router.push('/'+page.toLowerCase().replace(/ /g,''))
+                  }
                 }}
                 sx={{ my: 2, color: 'white', display: 'block', float:'right' }}
               >
@@ -119,35 +137,7 @@ const NavBar = () => {
             </div>
           </Box>
 
-          {/*<Box sx={{ flexGrow: 0 }}>
-                      <Tooltip title="Open settings">
-                        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                          <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                        </IconButton>
-                      </Tooltip>
-                      <Menu
-                        sx={{ mt: '45px' }}
-                        id="menu-appbar"
-                        anchorEl={anchorElUser}
-                        anchorOrigin={{
-                          vertical: 'top',
-                          horizontal: 'right',
-                        }}
-                        keepMounted
-                        transformOrigin={{
-                          vertical: 'top',
-                          horizontal: 'right',
-                        }}
-                        open={Boolean(anchorElUser)}
-                        onClose={handleCloseUserMenu}
-                      >
-                        {settings.map((setting) => (
-                          <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                            <Typography textAlign="center">{setting}</Typography>
-                          </MenuItem>
-                        ))}
-                      </Menu>
-                    </Box>*/}
+          
         </Toolbar>
       </Container>
     </AppBar>

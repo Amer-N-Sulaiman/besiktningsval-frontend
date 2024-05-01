@@ -11,13 +11,17 @@ import OpusStation from '../components/OpusStation.js'
 import CarspectStation from '../components/CarspectStation.js'
 import DekraStation from '../components/DekraStation.js'
 
-import {useState, useEffect, useRef} from 'react'
+import {useState, useEffect, useRef} from 'react';
 
-import axios from 'axios'
+import axios from 'axios';
 
-import produce from 'immer'
+import produce from 'immer';
 
-import jsCookie from 'js-cookie'
+import jsCookie from 'js-cookie';
+
+import {useRouter} from 'next/router';
+
+import Head from 'next/head';
 
 
 
@@ -27,6 +31,8 @@ const SearchForStations = (props) => {
 	const [searchForcer, setSearchForcer] = useState(true);
 	const myApiUrl = 'https://api.besiktningsval.se';
 	const [sortingMethod, setSortingMethod] = useState('distance');
+
+	const [searchedBefore, setSearchedBefore] = useState(0);
 	
 	const regNum = jsCookie.get('regNum')
 	const [loadingStations, setLoadingStations] = useState(false);
@@ -52,6 +58,8 @@ const SearchForStations = (props) => {
 	const [dekraStations, setDekraStations] = useState([]);
 	const [dekraBookingId, setDekraBookingId] = useState('');
 
+	const router = useRouter();
+
 	useEffect(()=>{
 		async function getAllStations(){
 
@@ -60,50 +68,64 @@ const SearchForStations = (props) => {
 				getCarspectStations(),
 				getDekraStations(),
 			]);
-			try{
-				await searchForStationsWithIp();
-			} catch(error){
-				console.log('there was an error ' + error);
-			}
+			
 		}
 
+		// if (jsCookie.get('regNum'))
+		
+		if (jsCookie.get('regNum') == undefined){
+			router.push('/')
+		}
 		getAllStations();
 		setLoadingStations(false);
 	}, []);
 	
 	async function searchForStations(location){
 			if (loadingStations){
-			return
+				return
 			}
 			setLoadingStations(true);
-			setNearStations([]);
-			await getOpusBookingId();
-			var googleMapsApiKey = 'AIzaSyD_pctPKnFcgCLTjbkmVvXFqUHM2VnIywk';
-			var apiEndPoint = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + location + '&key=' + googleMapsApiKey;
-			var locationInfo = await axios.get(apiEndPoint, {
-						headers: {
-									'Content-Type': 'application/json',
-								}
-					});
-			var lat = 57.708870
-			var lng = 11.974560
 			
-			if (location.toLowerCase() === 'stockholm'){
-				lat = 59.334591
-				lng = 18.063240
+			setNearStations([]);
+			setSearchedBefore(1)
+			await getOpusBookingId();
+			var googleMapsApiKey = 'AIzaSyDD4bzCpX0rVcvl6wSm0y__gYPgwvkba14';
+			
+			try {
+				var apiEndPoint = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + location + '&key=' + googleMapsApiKey;
+				var locationInfo = await axios.get(apiEndPoint, {
+					headers: {
+								'Content-Type': 'application/json',
+							}
+				});
+				var lat = locationInfo.data.results[0].geometry.location.lat;
+			} catch {
+				console.log('there was an error in google maps api');
+				setLoadingStations(false);
+				setSearchedBefore(1);
+				return;
 			}
+			
+			// var lat = 57.708870
+			// var lng = 11.974560
+			
+			// if (location.toLowerCase() === 'stockholm'){
+			// 	lat = 59.334591
+			// 	lng = 18.063240
+			// }
+			console.log('location info: ', locationInfo.data)
 			var customerCoordinatesNew = produce(customerCoordinates, (copy) => {
 
-				// copy.lat = locationInfo.data.results[0].geometry.location.lat;
-				// copy.lng = locationInfo.data.results[0].geometry.location.lng;
+				copy.lat = locationInfo.data.results[0].geometry.location.lat;
+				copy.lng = locationInfo.data.results[0].geometry.location.lng;
 
-				// copy.NELat = locationInfo.data.results[0].geometry.bounds.northeast.lat;
-				// copy.NELng = locationInfo.data.results[0].geometry.bounds.northeast.lng;
+				copy.NELat = locationInfo.data.results[0].geometry.bounds.northeast.lat;
+				copy.NELng = locationInfo.data.results[0].geometry.bounds.northeast.lng;
 
-				// copy.SWLat = locationInfo.data.results[0].geometry.bounds.southwest.lat;
-				// copy.SWLng = locationInfo.data.results[0].geometry.bounds.southwest.lng;
-				copy.lat = lat;
-				copy.lng = lng
+				copy.SWLat = locationInfo.data.results[0].geometry.bounds.southwest.lat;
+				copy.SWLng = locationInfo.data.results[0].geometry.bounds.southwest.lng;
+				// copy.lat = lat;
+				// copy.lng = lng
 
 			});
 
@@ -117,7 +139,7 @@ const SearchForStations = (props) => {
 
 	async function searchForStationsWithIp(){
       setNearStations([]);
-      var googleMapsApiKey = 'AIzaSyD_pctPKnFcgCLTjbkmVvXFqUHM2VnIywk'
+      var googleMapsApiKey = 'AIzaSyDD4bzCpX0rVcvl6wSm0y__gYPgwvkba14'
       var apiEndPoint = 'https://www.googleapis.com/geolocation/v1/geolocate?key='+googleMapsApiKey
       var locationInfo = await axios.post(apiEndPoint, {})
       var customerCoordinatesNew = produce(customerCoordinates, (copy)=>{
@@ -147,6 +169,7 @@ const SearchForStations = (props) => {
 		searchForNearStationsLocal()
 			.then(()=>{
 				setLoadingStations(false);
+				
 			})
 
 	}, [customerCoordinates, searchForcer]);
@@ -347,6 +370,12 @@ const SearchForStations = (props) => {
 
 	return (
 		<div className="SearchForStations">
+			<Head>
+				<title>
+					bilbesiktningar finns
+				</title>
+				<meta name="description" content="Ange din plats för att söka efter de bästa besiktningsinspektionerna nära dig" />
+			</Head>
 			<Container>
 				<Row>
 					<Col lg={6} md={6} sm={10} xs={11} style={{margin: "20px auto"}}>
@@ -365,8 +394,12 @@ const SearchForStations = (props) => {
 						{nearStations.length > 0 && <Typography variant='subtitle2' style={{float:'left'}}>
 							Hittades {nearStations.length} stationer
 						</Typography>}
-						{nearStations.length < 1 && <Typography variant='subtitle2' style={{float:'left'}}>
-						Inga stationer hittades nära din plats
+						{nearStations.length < 1 && !loadingStations && searchedBefore==1 && <Typography variant='subtitle2' style={{float:'left'}}>
+							Inga stationer hittades nära din plats
+
+						</Typography>}
+						{nearStations.length < 1 && searchedBefore===0 && <Typography variant='subtitle2' style={{float:'left'}}>
+							Ange din plats för att hitta stationer nära dig
 
 						</Typography>}
 					</Col>

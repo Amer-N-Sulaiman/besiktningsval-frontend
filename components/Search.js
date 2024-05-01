@@ -67,7 +67,7 @@ const Search = ({searchForStations, searchForStationsWithIp, setSortingMethod, s
 			    />
 			    {' '}läser in ...
 		  </Button>}
-			<LocationOnIcon fontSize='large' onClick={searchForStationsWithIp} style={{marginLeft: "20px"}} />
+			{/* <LocationOnIcon fontSize='large' onClick={searchForStationsWithIp} style={{marginLeft: "20px"}} /> */}
 				
 		</form>
 		</div>
